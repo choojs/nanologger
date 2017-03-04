@@ -1,0 +1,24 @@
+{
+  "name": "nanologger",
+  "description": "Cute browser logs",
+  "repository": "yoshuawuyts/nanologger",
+  "version": "1.0.0",
+  "scripts": {
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "start": "node .",
+    "test": "standard && npm run deps && nyc node test.js",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "dependency-check": "^2.8.0",
+    "nyc": "^10.1.2",
+    "standard": "^9.0.0",
+    "tape": "^4.6.3"
+  },
+  "keywords": [
+    "browser",
+    "log",
+    "emoji"
+  ]
+}
