@@ -37,27 +37,31 @@ function Nanologger (name) {
   this._logLevel = levels[this.logLevel]
 }
 
-Nanologger.prototype.debug = function (data) {
-  this._print('debug', data)
+Nanologger.prototype.debug = function (message, data) {
+  this._print('debug', message, data)
 }
 
-Nanologger.prototype.info = function (data) {
-  this._print('info', data)
+Nanologger.prototype.info = function (message, data) {
+  this._print('info', message, data)
 }
 
-Nanologger.prototype.warn = function (data) {
-  this._print('warn', data)
+Nanologger.prototype.warn = function (message, data) {
+  this._print('warn', message, data)
 }
 
-Nanologger.prototype.error = function (data) {
-  this._print('error', data)
+Nanologger.prototype.error = function (message, data) {
+  this._print('error', message, data)
 }
 
-Nanologger.prototype.fatal = function (data) {
-  this._print('fatal', data)
+Nanologger.prototype.fatal = function (message, data) {
+  this._print('fatal', message, data)
 }
 
-Nanologger.prototype._print = function (level, data) {
+Nanologger.prototype._print = function (level, message, data) {
+  if (levels[level] < this._logLevel) return
+
+  data = data === undefined ? '' : data
+  data = data || ''
   var time = this._getTimeStamp()
   var emoji = emojis[level]
   var name = this._name || 'unknown'
@@ -69,8 +73,8 @@ Nanologger.prototype._print = function (level, data) {
       ? colors.yellow
       : colors.green
 
-  var msg = '%c' + time + ' ' + emoji + ' %c' + name + ' %c' + data
-  console.log(msg, c(colors.brightBlack), c(colors.magenta), c(msgColor))
+  var msg = '%c' + time + ' ' + emoji + ' %c' + name + ' %c' + message
+  console.log(msg, c(colors.brightBlack), c(colors.magenta), c(msgColor), data)
 }
 
 Nanologger.prototype._c = function (color) {
