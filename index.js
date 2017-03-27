@@ -33,7 +33,11 @@ module.exports = Nanologger
 function Nanologger (name) {
   if (!(this instanceof Nanologger)) return new Nanologger(name)
   this._name = name || ''
-  this.logLevel = window.localStorage.getItem('logLevel') || 'info'
+  try {
+    this.logLevel = window.localStorage.getItem('logLevel') || 'info'
+  } catch (e) {
+    this.logLevel = 'info'
+  }
   this._logLevel = levels[this.logLevel]
 }
 
