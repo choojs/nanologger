@@ -19,5 +19,6 @@
     "browser",
     "log",
     "emoji"
-  ]
+  ],
+  "license": "MIT"
 }
