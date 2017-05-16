@@ -1,3 +1,33 @@
+var colors = {
+  foreground: '#d3c0c8',
+  background: '#2d2d2d',
+  black: '#2d2d2d',
+  red: '#f2777a',
+  green: '#99cc99',
+  yellow: '#ffcc66',
+  blue: '#6699cc',
+  magenta: '#cc99cc',
+  cyan: '#66cccc',
+  white: '#d3d0c8',
+  brightBlack: '#747369'
+}
+
+var emojis = {
+  debug: '🐛',
+  info: '✨',
+  warn: '⚠️',
+  error: '🚨',
+  fatal: '💀'
+}
+
+var levels = {
+  debug: 20,
+  info: 30,
+  warn: 40,
+  error: 50,
+  fatal: 60
+}
+
 module.exports = Nanologger
 
 function Nanologger (name) {
@@ -5,43 +35,13 @@ function Nanologger (name) {
 
   this._name = name || ''
 
-  this.colors = {
-    foreground: '#d3c0c8',
-    background: '#2d2d2d',
-    black: '#2d2d2d',
-    red: '#f2777a',
-    green: '#99cc99',
-    yellow: '#ffcc66',
-    blue: '#6699cc',
-    magenta: '#cc99cc',
-    cyan: '#66cccc',
-    white: '#d3d0c8',
-    brightBlack: '#747369'
-  }
-
-  this.emojis = {
-    debug: '🐛',
-    info: '✨',
-    warn: '⚠️',
-    error: '🚨',
-    fatal: '💀'
-  }
-
-  this.levels = {
-    debug: 20,
-    info: 30,
-    warn: 40,
-    error: 50,
-    fatal: 60
-  }
-
   try {
     this.logLevel = window.localStorage.getItem('logLevel') || 'info'
   } catch (e) {
     this.logLevel = 'info'
   }
 
-  this._logLevel = this.levels[this.logLevel]
+  this._logLevel = levels[this.logLevel]
 }
 
 Nanologger.prototype.debug = function () {
@@ -75,13 +75,11 @@ Nanologger.prototype.fatal = function () {
 }
 
 Nanologger.prototype._print = function (level) {
-  if (this.levels[level] < this._logLevel) return
+  if (levels[level] < this._logLevel) return
 
-  var colors = this.colors
-  var time = this._getTimeStamp()
-  var emoji = this.emojis[level]
+  var time = getTimeStamp()
+  var emoji = emojis[level]
   var name = this._name || 'unknown'
-  var c = this._c
 
   var msgColor = (level === 'error' || level.fatal)
     ? colors.red
@@ -90,13 +88,13 @@ Nanologger.prototype._print = function (level) {
       : colors.green
 
   var msg = '%c' + time + ' ' + emoji + ' %c' + name
-  var args = [msg, c(colors.brightBlack), c(colors.magenta)]
+  var args = [msg, color(colors.brightBlack), color(colors.magenta)]
 
   for (var i = 1, len = arguments.length; i < len; i++) {
     var arg = arguments[i]
     if (i === 1 && typeof arg === 'string') {
       args[0] = msg + ' %c' + arg
-      args.push(c(msgColor))
+      args.push(color(msgColor))
     } else {
       args.push(arg)
     }
@@ -105,18 +103,18 @@ Nanologger.prototype._print = function (level) {
   console.log.apply(console, args)
 }
 
-Nanologger.prototype._c = function (color) {
+function color (color) {
   return 'color: ' + color + ';'
 }
 
-Nanologger.prototype._getTimeStamp = function () {
+function getTimeStamp () {
   var date = new Date()
-  var hours = this._pad(date.getHours().toString())
-  var minutes = this._pad(date.getMinutes().toString())
-  var seconds = this._pad(date.getSeconds().toString())
+  var hours = pad(date.getHours().toString())
+  var minutes = pad(date.getMinutes().toString())
+  var seconds = pad(date.getSeconds().toString())
   return hours + ':' + minutes + ':' + seconds
 }
 
-Nanologger.prototype._pad = function (str) {
-  return (str.length !== 2) ? '0' + str : str
+function pad (str) {
+  return (str.length !== 2) ? 0 + str : str
 }
