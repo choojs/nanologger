@@ -1,17 +1,3 @@
-var colors = {
-  foreground: '#d3c0c8',
-  background: '#2d2d2d',
-  black: '#2d2d2d',
-  red: '#f2777a',
-  green: '#99cc99',
-  yellow: '#ffcc66',
-  blue: '#6699cc',
-  magenta: '#cc99cc',
-  cyan: '#66cccc',
-  white: '#d3d0c8',
-  brightBlack: '#747369'
-}
-
 var emojis = {
   debug: '🐛',
   info: '✨',
@@ -26,6 +12,20 @@ var levels = {
   warn: 40,
   error: 50,
   fatal: 60
+}
+
+var colors = {
+  foreground: '#d3c0c8',
+  background: '#2d2d2d',
+  black: '#2d2d2d',
+  red: '#f2777a',
+  green: '#99cc99',
+  yellow: '#ffcc66',
+  blue: '#6699cc',
+  magenta: '#cc99cc',
+  cyan: '#66cccc',
+  white: '#d3d0c8',
+  brightBlack: '#747369'
 }
 
 module.exports = Nanologger
@@ -87,18 +87,45 @@ Nanologger.prototype._print = function (level) {
       ? colors.yellow
       : colors.green
 
-  var msg = '%c' + time + ' ' + emoji + ' %c' + name
-  var args = [msg, color(colors.brightBlack), color(colors.magenta)]
+  var objs = []
+  var args = [ null ]
+  var msg = '%c%s ' + emoji + ' %c%s'
+
+  args.push(color(colors.brightBlack), time)
+  args.push(color(colors.magenta), name)
 
   for (var i = 1, len = arguments.length; i < len; i++) {
     var arg = arguments[i]
-    if (i === 1 && typeof arg === 'string') {
-      args[0] = msg + ' %c' + arg
-      args.push(color(msgColor))
-    } else {
+    if (typeof arg === 'string') {
+      if (i === 1) {
+        // first string argument is in color
+        msg += ' %c%s'
+        args.push(color(msgColor))
+        args.push(arg)
+      } else if (/ms$/.test(arg)) {
+        // arguments finishing with 'ms', grey out
+        msg += ' %c%s'
+        args.push(color(colors.brightBlack))
+        args.push(arg)
+      } else {
+        // normal colors
+        msg += ' %c%s'
+        args.push(color(colors.white))
+        args.push(arg)
+      }
+    } else if (typeof arg === 'number') {
+      msg += ' %c%d'
+      args.push(color(colors.magenta))
       args.push(arg)
+    } else {
+      objs.push(arg)
     }
   }
+
+  args[0] = msg
+  objs.forEach(function (obj) {
+    args.push(obj)
+  })
 
   console.log.apply(console, args)
 }
@@ -116,5 +143,5 @@ function getTimeStamp () {
 }
 
 function pad (str) {
-  return (str.length !== 2) ? 0 + str : str
+  return str.length !== 2 ? 0 + str : str
 }
