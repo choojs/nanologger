@@ -32,67 +32,116 @@ module.exports = Nanologger
 
 function Nanologger (name) {
   if (!(this instanceof Nanologger)) return new Nanologger(name)
+
   this._name = name || ''
+
   try {
     this.logLevel = window.localStorage.getItem('logLevel') || 'info'
   } catch (e) {
     this.logLevel = 'info'
   }
+
   this._logLevel = levels[this.logLevel]
 }
 
-Nanologger.prototype.debug = function (message, data) {
-  this._print('debug', message, data)
+Nanologger.prototype.debug = function () {
+  var args = [ 'debug' ]
+  for (var i = 0, len = arguments.length; i < len; i++) args.push(arguments[i])
+  this._print.apply(this, args)
 }
 
-Nanologger.prototype.info = function (message, data) {
-  this._print('info', message, data)
+Nanologger.prototype.info = function () {
+  var args = [ 'info' ]
+  for (var i = 0, len = arguments.length; i < len; i++) args.push(arguments[i])
+  this._print.apply(this, args)
 }
 
-Nanologger.prototype.warn = function (message, data) {
-  this._print('warn', message, data)
+Nanologger.prototype.warn = function () {
+  var args = [ 'warn' ]
+  for (var i = 0, len = arguments.length; i < len; i++) args.push(arguments[i])
+  this._print.apply(this, args)
 }
 
-Nanologger.prototype.error = function (message, data) {
-  this._print('error', message, data)
+Nanologger.prototype.error = function () {
+  var args = [ 'error' ]
+  for (var i = 0, len = arguments.length; i < len; i++) args.push(arguments[i])
+  this._print.apply(this, args)
 }
 
-Nanologger.prototype.fatal = function (message, data) {
-  this._print('fatal', message, data)
+Nanologger.prototype.fatal = function () {
+  var args = [ 'fatal' ]
+  for (var i = 0, len = arguments.length; i < len; i++) args.push(arguments[i])
+  this._print.apply(this, args)
 }
 
-Nanologger.prototype._print = function (level, message, data) {
+Nanologger.prototype._print = function (level) {
   if (levels[level] < this._logLevel) return
 
-  data = data === undefined ? '' : data
-  data = data || ''
-  var time = this._getTimeStamp()
+  var time = getTimeStamp()
   var emoji = emojis[level]
   var name = this._name || 'unknown'
-  var c = this._c
 
   var msgColor = (level === 'error' || level.fatal)
     ? colors.red
-    : (level === 'warn')
+    : level === 'warn'
       ? colors.yellow
       : colors.green
 
-  var msg = '%c' + time + ' ' + emoji + ' %c' + name + ' %c' + message
-  console.log(msg, c(colors.brightBlack), c(colors.magenta), c(msgColor), data)
+  var objs = []
+  var args = [ null ]
+  var msg = '%c%s ' + emoji + ' %c%s'
+
+  args.push(color(colors.brightBlack), time)
+  args.push(color(colors.magenta), name)
+
+  for (var i = 1, len = arguments.length; i < len; i++) {
+    var arg = arguments[i]
+    if (typeof arg === 'string') {
+      if (i === 1) {
+        // first string argument is in color
+        msg += ' %c%s'
+        args.push(color(msgColor))
+        args.push(arg)
+      } else if (/ms$/.test(arg)) {
+        // arguments finishing with 'ms', grey out
+        msg += ' %c%s'
+        args.push(color(colors.brightBlack))
+        args.push(arg)
+      } else {
+        // normal colors
+        msg += ' %c%s'
+        args.push(color(colors.white))
+        args.push(arg)
+      }
+    } else if (typeof arg === 'number') {
+      msg += ' %c%d'
+      args.push(color(colors.magenta))
+      args.push(arg)
+    } else {
+      objs.push(arg)
+    }
+  }
+
+  args[0] = msg
+  objs.forEach(function (obj) {
+    args.push(obj)
+  })
+
+  console.log.apply(console, args)
 }
 
-Nanologger.prototype._c = function (color) {
+function color (color) {
   return 'color: ' + color + ';'
 }
 
-Nanologger.prototype._getTimeStamp = function () {
+function getTimeStamp () {
   var date = new Date()
-  var hours = this._pad(date.getHours().toString())
-  var minutes = this._pad(date.getMinutes().toString())
-  var seconds = this._pad(date.getSeconds().toString())
+  var hours = pad(date.getHours().toString())
+  var minutes = pad(date.getMinutes().toString())
+  var seconds = pad(date.getSeconds().toString())
   return hours + ':' + minutes + ':' + seconds
 }
 
-Nanologger.prototype._pad = function (str) {
-  return (str.length !== 2) ? '0' + str : str
+function pad (str) {
+  return str.length !== 2 ? 0 + str : str
 }
