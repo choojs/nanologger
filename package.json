@@ -8,6 +8,9 @@
     "start": "node .",
     "test": "standard && npm run deps"
   },
+  "browser": {
+    "process": false
+  },
   "dependencies": {},
   "devDependencies": {
     "dependency-check": "^2.8.0",

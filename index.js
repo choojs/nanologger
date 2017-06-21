@@ -28,6 +28,9 @@ var colors = {
   brightBlack: '#747369'
 }
 
+var process = require('process') // browser exclude
+var isBrowser = typeof window !== 'undefined'
+
 module.exports = Nanologger
 
 function Nanologger (name) {
@@ -38,7 +41,7 @@ function Nanologger (name) {
   try {
     this.logLevel = window.localStorage.getItem('logLevel') || 'info'
   } catch (e) {
-    this.logLevel = 'info'
+    this.logLevel = (process.env && process.env.LOG_LEVEL) || 'info'
   }
 
   this._logLevel = levels[this.logLevel]
@@ -91,38 +94,53 @@ Nanologger.prototype._print = function (level) {
   var args = [ null ]
   var msg = '%c%s ' + emoji + ' %c%s'
 
-  args.push(color(colors.brightBlack), time)
-  args.push(color(colors.magenta), name)
+  if (isBrowser) {
+    args.push(color(colors.brightBlack))
+    args.push(time)
+  } else {
+    args[0] = time
+    args.push(emoji + ' ')
+  }
+  if (isBrowser) args.push(color(colors.magenta))
+  args.push(name)
 
   for (var i = 1, len = arguments.length; i < len; i++) {
     var arg = arguments[i]
     if (typeof arg === 'string') {
       if (i === 1) {
         // first string argument is in color
-        msg += ' %c%s'
-        args.push(color(msgColor))
+        if (isBrowser) {
+          msg += ' %c%s'
+          args.push(color(msgColor))
+        }
         args.push(arg)
       } else if (/ms$/.test(arg)) {
         // arguments finishing with 'ms', grey out
-        msg += ' %c%s'
-        args.push(color(colors.brightBlack))
+        if (isBrowser) {
+          msg += ' %c%s'
+          args.push(color(colors.brightBlack))
+        }
         args.push(arg)
       } else {
         // normal colors
-        msg += ' %c%s'
-        args.push(color(colors.white))
+        if (isBrowser) {
+          msg += ' %c%s'
+          args.push(color(colors.white))
+        }
         args.push(arg)
       }
     } else if (typeof arg === 'number') {
-      msg += ' %c%d'
-      args.push(color(colors.magenta))
+      if (isBrowser) {
+        msg += ' %c%d'
+        args.push(color(colors.magenta))
+      }
       args.push(arg)
     } else {
       objs.push(arg)
     }
   }
 
-  args[0] = msg
+  if (isBrowser) args[0] = msg
   objs.forEach(function (obj) {
     args.push(obj)
   })
