@@ -33,6 +33,7 @@ var defaultColors = {
   brightBlack: '#747369'
 }
 
+var process = require('process') // browser exclude
 var isBrowser = typeof window !== 'undefined'
 
 module.exports = Nanologger
