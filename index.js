@@ -1,3 +1,6 @@
+var assert = require('assert')
+var xtend = require('xtend')
+
 var emojis = {
   debug: '🐛',
   info: '✨',
@@ -14,7 +17,7 @@ var levels = {
   fatal: 60
 }
 
-var colors = {
+var defaultColors = {
   foreground: '#d3c0c8',
   background: '#2d2d2d',
   black: '#2d2d2d',
@@ -30,10 +33,14 @@ var colors = {
 
 module.exports = Nanologger
 
-function Nanologger (name) {
-  if (!(this instanceof Nanologger)) return new Nanologger(name)
+function Nanologger (name, opts) {
+  opts = opts || {}
+  if (!(this instanceof Nanologger)) return new Nanologger(name, opts)
+
+  assert.equal(typeof opts, 'object', 'nanologger: opts should be type object')
 
   this._name = name || ''
+  this._colors = xtend(defaultColors, opts.colors || {})
 
   try {
     this.logLevel = window.localStorage.getItem('logLevel') || 'info'
@@ -82,17 +89,17 @@ Nanologger.prototype._print = function (level) {
   var name = this._name || 'unknown'
 
   var msgColor = (level === 'error' || level.fatal)
-    ? colors.red
+    ? this._colors.red
     : level === 'warn'
-      ? colors.yellow
-      : colors.green
+      ? this._colors.yellow
+      : this._colors.green
 
   var objs = []
   var args = [ null ]
   var msg = '%c%s ' + emoji + ' %c%s'
 
-  args.push(color(colors.brightBlack), time)
-  args.push(color(colors.magenta), name)
+  args.push(color(this._colors.brightBlack), time)
+  args.push(color(this._colors.magenta), name)
 
   for (var i = 1, len = arguments.length; i < len; i++) {
     var arg = arguments[i]
@@ -105,17 +112,17 @@ Nanologger.prototype._print = function (level) {
       } else if (/ms$/.test(arg)) {
         // arguments finishing with 'ms', grey out
         msg += ' %c%s'
-        args.push(color(colors.brightBlack))
+        args.push(color(this._colors.brightBlack))
         args.push(arg)
       } else {
         // normal colors
         msg += ' %c%s'
-        args.push(color(colors.white))
+        args.push(color(this._colors.white))
         args.push(arg)
       }
     } else if (typeof arg === 'number') {
       msg += ' %c%d'
-      args.push(color(colors.magenta))
+      args.push(color(this._colors.magenta))
       args.push(arg)
     } else {
       objs.push(arg)

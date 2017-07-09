@@ -8,7 +8,9 @@
     "start": "node .",
     "test": "standard && npm run deps"
   },
-  "dependencies": {},
+  "dependencies": {
+    "xtend": "^4.0.1"
+  },
   "devDependencies": {
     "dependency-check": "^2.8.0",
     "nyc": "^10.1.2",
