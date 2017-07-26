@@ -2,6 +2,7 @@ var assert = require('assert')
 var xtend = require('xtend')
 
 var emojis = {
+  trace: '🔍',
   debug: '🐛',
   info: '✨',
   warn: '⚠️',
@@ -10,6 +11,7 @@ var emojis = {
 }
 
 var levels = {
+  trace: 10,
   debug: 20,
   info: 30,
   warn: 40,
@@ -49,6 +51,12 @@ function Nanologger (name, opts) {
   }
 
   this._logLevel = levels[this.logLevel]
+}
+
+Nanologger.prototype.trace = function () {
+  var args = [ 'trace' ]
+  for (var i = 0, len = arguments.length; i < len; i++) args.push(arguments[i])
+  this._print.apply(this, args)
 }
 
 Nanologger.prototype.debug = function () {
