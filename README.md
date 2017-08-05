@@ -17,8 +17,10 @@ log.fatal('send help')
 ```
 
 ## API
-### `log = logger([name])`
-Create a new `nanologger` instance. Name defaults to `'unknown'`.
+### `log = logger([name][, opts])`
+Create a new `nanologger` instance. Name defaults to `'unknown'`. Opts should be an object with the following properties:
+
+- colors: Key/value object used to set the colors of the logger. If any of the expected colors is not set, it will use [the defaults][12], any extra color will be ignored.
 
 ### `level = log.logLevel`
 Read the current logLevel. The log level can be set through
@@ -58,3 +60,4 @@ Emit a message at loglevel 💀
 [9]: https://npmjs.org/package/nanologger
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
+[12]: https://github.com/choojs/nanologger/blob/master/index.js#L22-L34
