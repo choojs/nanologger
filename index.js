@@ -142,7 +142,9 @@ Nanologger.prototype._print = function (level) {
     args.push(obj)
   })
 
-  console.log.apply(console, args)
+  // In IE/Edge console functions don't inherit from Function.prototype
+  // so this is necessary to get all the args applied.
+  Function.prototype.apply.apply(console.log, [console, args])
 }
 
 function color (color) {
