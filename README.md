@@ -52,10 +52,10 @@ Emit a message at loglevel 💀
 [1]: https://nodejs.org/api/documentation.html#documentation_stability_index
 [2]: https://img.shields.io/npm/v/nanologger.svg?style=flat-square
 [3]: https://npmjs.org/package/nanologger
-[4]: https://img.shields.io/travis/yoshuawuyts/nanologger/master.svg?style=flat-square
-[5]: https://travis-ci.org/yoshuawuyts/nanologger
-[6]: https://img.shields.io/codecov/c/github/yoshuawuyts/nanologger/master.svg?style=flat-square
-[7]: https://codecov.io/github/yoshuawuyts/nanologger
+[4]: https://img.shields.io/travis/choojs/nanologger/master.svg?style=flat-square
+[5]: https://travis-ci.org/choojs/nanologger
+[6]: https://img.shields.io/codecov/c/github/choojs/nanologger/master.svg?style=flat-square
+[7]: https://codecov.io/github/choojs/nanologger
 [8]: http://img.shields.io/npm/dm/nanologger.svg?style=flat-square
 [9]: https://npmjs.org/package/nanologger
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
