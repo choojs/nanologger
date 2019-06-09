@@ -1,16 +1,8 @@
 {
   "name": "nanologger",
   "description": "Cute browser logs",
-  "repository": "choojs/nanologger",
   "version": "1.3.1",
-  "scripts": {
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "start": "node .",
-    "test": "standard && npm run deps"
-  },
-  "dependencies": {
-    "xtend": "^4.0.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "dependency-check": "^2.8.0",
     "nyc": "^10.1.2",
@@ -19,8 +11,14 @@
   },
   "keywords": [
     "browser",
-    "log",
-    "emoji"
+    "emoji",
+    "log"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": "choojs/nanologger",
+  "scripts": {
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "start": "node .",
+    "test": "standard && npm run deps"
+  }
 }

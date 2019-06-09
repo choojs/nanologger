@@ -1,5 +1,4 @@
 var assert = require('assert')
-var xtend = require('xtend')
 
 var emojis = {
   trace: '🔍',
@@ -42,7 +41,7 @@ function Nanologger (name, opts) {
   assert.equal(typeof opts, 'object', 'nanologger: opts should be type object')
 
   this._name = name || ''
-  this._colors = xtend(defaultColors, opts.colors || {})
+  this._colors = Object.assign({}, defaultColors, opts.colors || {})
 
   try {
     this.logLevel = window.localStorage.getItem('logLevel') || 'info'
