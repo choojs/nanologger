@@ -8,6 +8,9 @@
     "start": "node .",
     "test": "standard && npm run deps"
   },
+  "browser": {
+    "process": false
+  },
   "dependencies": {
     "xtend": "^4.0.1"
   },
